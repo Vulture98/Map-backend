@@ -15,13 +15,15 @@ const createUser = asyncHandler(async (req, res) => {
   //   console.log(email);
   const userExists = await User.findOne({ email });
   if (userExists) {
+    console.log(`Email already exists `);
     return res.status(400).json({ message: "Email already exists" });
   }
 
   const salt = await bcrypt.genSalt(10);
   const hashPassword = await bcrypt.hash(password, salt);
+  console.log(`after password `);
   const newUser = await User.create({
-    username,
+    username:email, 
     email,
     password: hashPassword,
     isAdmin,
@@ -30,7 +32,7 @@ const createUser = asyncHandler(async (req, res) => {
   try {
     await newUser.save();
     const token = generateToken(res, newUser._id);
-    res.json({
+    res.status(201).json({
       _id: newUser._id,
       username: newUser.username,
       email: newUser.email,
@@ -38,8 +40,8 @@ const createUser = asyncHandler(async (req, res) => {
       token: token,
     });
   } catch (error) {
-    res.status(400);
-    throw new error("invalid user data");
+    console.error("Error creating user:", error);
+    res.status(400).json({ message: "Invalid user data" }); // Respond with a clear error message
   }
 });
 
@@ -132,6 +134,7 @@ const updateUser = asyncHandler(async (req, res) => {
 
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
+  console.log(`here in loginUser(): ${email} `);
   const existingUser = await User.findOne({ email });
 
   if (

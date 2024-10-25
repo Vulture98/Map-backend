@@ -17,17 +17,40 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser())
+// app.use(
+//   cors({
+//     // origin: process.env.FRONTEND_URL || "http://localhost:5173", 
+//     // origin: ['http://localhost:5173', 'http://localhost:5174'],
+//     // origin: "*",
+//     origin: "http://localhost:5173",
+//     credentials: true,
+//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//   })
+// );
+
+const allowedOrigins = [
+  "https://map-frontend-d6yw.vercel.app",
+  "http://localhost:5173",
+  "http://localhost:5174",
+];
+
 app.use(
   cors({
-    // origin: process.env.FRONTEND_URL || "http://localhost:5173", 
-    // origin: ['http://localhost:5173', 'http://localhost:5174'],
-    // origin: "*",
-    origin: "http://localhost:5173",
+    origin: (origin, callback) => {
+      // Allow requests with no origin
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, origin);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
 
 app.use('/api/users', router);
 app.use('/user/task', routerTask)

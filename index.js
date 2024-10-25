@@ -33,7 +33,7 @@ app.use('/api/users', router);
 app.use('/user/task', routerTask)
 
 app.get('/', (req, res) => {
-  res.send('Hello, World!12345');
+  res.send('Hello, World!');
 });
 
 

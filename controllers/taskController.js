@@ -23,8 +23,9 @@ const createTask = asyncHandler(async (req, res) => {
   }
 });
 */
+
 const createTask = asyncHandler(async (req, res) => {
-  console.log(`createTask() `);
+  console.log(`createTask()`);
   try {
     const { title, description, status } = req.body; // Removed userId from here
     const user = req.user._id; // Assuming you are attaching the user ID to the request in a middleware
@@ -57,6 +58,8 @@ const getAllTasks = asyncHandler(async (req, res) => {
 });
 */
 const getAllTasks = asyncHandler(async (req, res) => {
+  console.log(`in getAllTasks() `);
+  console.log(`"req.user.id":`, req.user.id);
   try {
     const tasks = await Task.find({ userId: req.user.id }); // Fetch tasks only for the logged-in user
     res.json(tasks);

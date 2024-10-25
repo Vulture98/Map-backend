@@ -13,8 +13,8 @@ routerTask
   .route("/")
   .get(authenticate, getAllTasks) // Add authentication to get all tasks
   // .post(authenticate, createTask); // Add authentication to create a task
-  // .post(createTask); // Add authentication to create a task
-  .post(authenticate, createTask); // Add authentication to create a task
+  .post(createTask); // Add authentication to create a task
+  // .post(authenticate, createTask); // Add authentication to create a task
 routerTask.route("/:id").put(authenticate, updateTask); // You may implement updateTask later
 
 // New route for deleting a task by ID

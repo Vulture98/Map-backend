@@ -3,8 +3,11 @@ import asyncHandler from "./asyncHandler.js";
 import jwt from "jsonwebtoken";
 
 const authenticate = asyncHandler(async (req, res, next) => {
+  console.log(`here in authenticate() `);
   let token;
   token = req.cookies.jwt;
+
+  console.log(`"token":`, token);
 
   if (token) {
     try {

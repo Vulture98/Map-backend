@@ -1,31 +1,11 @@
 import express from "express";
 import Task from "../models/taskModel.js";
 import asyncHandler from "../middlewares/asyncHandler.js";
-/*
-const createTask = asyncHandler(async (req, res) => {
-  console.log(`createTask() `);
-  try {
-    // console.log(`"req":`, req);
-    const { title, description, status, userId } = req.body; // Remove user from here
-    const user = req.user._id; // Assuming you are attaching the user ID to the request in a middleware
-    const newTask = await Task.create({
-      title,
-      description,
-      user,
-      status,
-      userId,
-    });
-
-    res.status(201).json(newTask);
-  } catch (error) {
-    res.status(400).json({ message: "Error creating task", error });
-    console.error(`"error.message":`, error.message);
-  }
-});
-*/
+import User from "../models/userModels.js";
 
 const createTask = asyncHandler(async (req, res) => {
-  console.log(`createTask()`);
+  console.log(`createTask()`);  
+  console.log(`"req.user.username":`, req.user.username);
   try {
     const { title, description, status } = req.body; // Removed userId from here
     const user = req.user._id; // Assuming you are attaching the user ID to the request in a middleware
@@ -47,20 +27,18 @@ const createTask = asyncHandler(async (req, res) => {
 });
 
 // Get all tasks
-/*
-const getAllTasks = asyncHandler(async (req, res) => {
-  try {
-    const tasks = await Task.find().populate("user", "username"); // Populate user data
-    res.status(200).json(tasks);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching tasks", error });
-  }
-});
-*/
 const getAllTasks = asyncHandler(async (req, res) => {
   console.log(`in getAllTasks() `);
-  console.log(`"req.user.id":`, req.user.id);
+  console.log(`"req.user.username":`, req.user.username);
   try {
+    //if googleUser    
+    if (req.user.googleId   === true) {
+      console.log(`"req.user.googleId":`, req.user.googleId);
+      // Find the user with the googleId and get their userId
+      const user = await User.findOne({ googleId: req.user.googleId });
+      console.log(`"user.username":`, user.username);
+    }
+
     const tasks = await Task.find({ userId: req.user.id }); // Fetch tasks only for the logged-in user
     res.json(tasks);
   } catch (err) {
@@ -69,6 +47,9 @@ const getAllTasks = asyncHandler(async (req, res) => {
 });
 
 const deleteTask = asyncHandler(async (req, res) => {
+  console.log(`here in deleteTask() `);
+  console.log(`task id to be deleted: ${req.params.id} `);
+  console.log(`task name to be deleted: ${req.params.title} `);
   const { id } = req.params; // Extract task ID from URL parameters
 
   try {

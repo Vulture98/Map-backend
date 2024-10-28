@@ -23,7 +23,7 @@ const createUser = asyncHandler(async (req, res) => {
   const hashPassword = await bcrypt.hash(password, salt);
   console.log(`after password `);
   const newUser = await User.create({
-    username:email, 
+    username: email,
     email,
     password: hashPassword,
     isAdmin,
@@ -37,7 +37,7 @@ const createUser = asyncHandler(async (req, res) => {
       username: newUser.username,
       email: newUser.email,
       isAdmin: newUser.isAdmin,
-      token: token,
+      // token: token,
     });
   } catch (error) {
     console.error("Error creating user:", error);
@@ -86,18 +86,7 @@ const deleteUserById = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("User not found");
   }
-  // if (user.isAdmin) {
-  //   // return res.send(400).json({ message: "cannot delete user" });
-  //   return res
-  //     .status(403)
-  //     .json({ message: "Unauthorized to delete this resource" });
-  // }
-  // const deleteUser = await User.findByIdAndDelete(userId);
-  // console.log(`Hello from deleteUser`);
-  // if (!deleteUser) {
-  //   return res.status(404).json({ message: "User not found" });
-  // }
-  // res.status(200).json({ message: "User deleted" });
+
 });
 
 const updateUser = asyncHandler(async (req, res) => {
@@ -144,13 +133,7 @@ const loginUser = asyncHandler(async (req, res) => {
     return res.status(401).json({ message: "Invalid email or password" });
   }
   const token = generateToken(res, existingUser._id);
-  // res.status(201).json({
-  //   _id: existingUser._id,
-  //   username: existingUser.username,
-  //   email: existingUser.email,
-  //   isAdmin: existingUser.isAdmin,
-  //   token: token,
-  // });
+  console.log(`"res.cookie-token":`, token);
   res.status(201).json({ message: `welcome ${existingUser.username}` });
   return;
 });

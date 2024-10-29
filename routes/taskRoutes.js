@@ -4,6 +4,7 @@ import {
   createTask,
   deleteTask,
   updateTask,
+  updateIndex,
 } from "../controllers/taskController.js";
 import { authenticate, authorizeAdmin } from "../middlewares/authMiddleware.js";
 
@@ -19,7 +20,10 @@ routerTask.route("/:id").put(authenticate, updateTask); // You may implement upd
 
 routerTask
   .route("/:id") // This route will handle deleting a task
-  .delete(authenticate, deleteTask); // Add authentication  
+  .delete(authenticate, deleteTask); // Add authentication
 
+routerTask
+  .route("/index/:id")
+  .put(authenticate, updateIndex); //
 
 export default routerTask;

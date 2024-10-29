@@ -4,10 +4,10 @@ import asyncHandler from "../middlewares/asyncHandler.js";
 import User from "../models/userModels.js";
 
 const createTask = asyncHandler(async (req, res) => {
-  console.log(`createTask()`);  
+  console.log(`createTask()`);
   console.log(`"req.user.username":`, req.user.username);
   try {
-    const { title, description, status } = req.body; // Removed userId from here
+    const { title, description, status, index } = req.body; // Removed userId from here
     const user = req.user._id; // Assuming you are attaching the user ID to the request in a middleware
 
     // Create a new task
@@ -16,6 +16,7 @@ const createTask = asyncHandler(async (req, res) => {
       description,
       userId: user, // Save the user ID to userId field in the task
       status,
+      index,
     });
 
     // Respond with the created task
@@ -26,13 +27,12 @@ const createTask = asyncHandler(async (req, res) => {
   }
 });
 
-// Get all tasks
 const getAllTasks = asyncHandler(async (req, res) => {
-  console.log(`in getAllTasks() `);
+  console.log(`in getAllTasks()  ===  ===  ===  ===  ===  ===  ===`);
   console.log(`"req.user.username":`, req.user.username);
   try {
-    //if googleUser    
-    if (req.user.googleId   === true) {
+    //if googleUser
+    if (req.user.googleId === true) {
       console.log(`"req.user.googleId":`, req.user.googleId);
       // Find the user with the googleId and get their userId
       const user = await User.findOne({ googleId: req.user.googleId });
@@ -87,4 +87,82 @@ const updateTask = asyncHandler(async (req, res) => {
   }
 });
 
-export { getAllTasks, createTask, deleteTask, updateTask };
+const updateIndex = asyncHandler(async (req, res) => {  
+  const { id } = req.params; // Task ID
+  const { newIndex, newStatus } = req.body; // New index and target column  
+
+  // 1. Find the task being moved
+  const task = await Task.findById(id);
+  const findUserId = task.userId;
+  const tasks = await Task.find({ userId: findUserId }); // Fetch tasks only for the logged-in user
+  const formattedTasks = (tasks) =>
+    tasks.map((task) => ({
+      title: task.title,
+      status: task.status,
+      index: task.index,
+    }));
+
+  if (!task) {    
+    return res.status(404).json({ message: "Task not found." });
+  }
+
+  const sourceStatus = task.status;
+  const oldIndex = task.index;
+
+  // 2. Update the task's new column and index if the column is different
+  if (sourceStatus !== newStatus) {    
+    await Task.updateMany(
+      { status: newStatus, index: { $gte: newIndex } },
+      { $inc: { index: 1 } } // Increment the index for tasks in target column
+    );
+    await Task.updateMany(
+      { status: sourceStatus, index: { $gt: oldIndex } },
+      { $inc: { index: -1 } } // Increment the index for tasks in src column
+    );
+    await Task.updateOne({ _id: id }, { status: newStatus, index: newIndex });
+  } else {
+    if (oldIndex > newIndex) {
+      console.log(`sourceStatus == newStatus MOVING UP if ===  ===  ===  === `);
+      await Task.updateMany(
+        { status: newStatus, index: { $gte: newIndex, $lt: oldIndex } },
+        { $inc: { index: 1 } } // Increment the index for tasks in the target column
+      );
+      await Task.updateOne({ _id: id }, { status: newStatus, index: newIndex });
+    } else {
+      //new > old
+      console.log(`sourceStatus == newStatus else MOVING DOWN else  ===  ===`);
+      await Task.updateMany(
+        { status: newStatus, index: { $gt: oldIndex, $lte: newIndex } },
+        { $inc: { index: -1 } } // Increment the index for tasks in the target column
+      );
+      await Task.updateOne({ _id: id }, { status: newStatus, index: newIndex });
+    }
+  }
+
+  // after index reorder
+  const tasksOrder = await Task.find({ userId: findUserId }); // Fetch tasks only for the logged-in user
+  console.log(`"user-all tasks after":`, formattedTasks(tasksOrder));
+
+  // 3. Fetch tasks in all three columns for this specific user
+  const userId = task.userId; // Assuming each task has a userId field
+  const columns = ["to-do", "in-progress", "done"];
+  const allColumnsTasks = {};
+
+  for (const col of columns) {
+    const tasksInColumn = await Task.find({ column: col, userId })
+      .sort({ index: 1 })
+      .select("name description index"); // Fetching only necessary fields
+
+    allColumnsTasks[col] = tasksInColumn;
+  }
+
+  // Logging each column's tasks for verification
+  console.log("Updated tasks in all columns for this user:");
+
+  // sending updated tasks
+  const updatedTasks = await Task.find({ userId: req.user.id }); // Fetch tasks only for the logged-in user
+  res.json(updatedTasks);
+  console.log(`end of updateIndex()`);
+});
+
+export { getAllTasks, createTask, deleteTask, updateTask, updateIndex };

@@ -26,3 +26,6 @@ dist-ssr
 
 # env files
 .env 
+
+# other files
+observations.md

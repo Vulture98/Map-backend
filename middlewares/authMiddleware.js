@@ -2,34 +2,7 @@ import User from "../models/userModels.js";
 import asyncHandler from "./asyncHandler.js";
 import jwt from "jsonwebtoken";
 
-const authenticate = asyncHandler(async (req, res, next) => {
-  console.log(`here in authenticate() `);
-  
-  // Accessing request method
-  console.log('Method:', req.method);
-
-  // Accessing request URL
-  console.log('URL:', req.url);
-
-  // Accessing headers
-  console.log('Headers:', req.headers);
-
-  // Accessing query parameters
-  console.log('Query Parameters:', req.query);
-
-  // Accessing route parameters
-  console.log('Route Parameters:', req.params);
-
-  // Accessing body data
-  console.log('Body:', req.body);
-
-  // Accessing client IP address
-  console.log('Client IP:', req.ip);
-
-  // Accessing cookies
-  console.log('Cookies:', req.cookies);
-
-  
+const authenticate = asyncHandler(async (req, res, next) => {  
   let token;
   token = req.cookies.jwt;
 
@@ -61,10 +34,6 @@ const authorizeAdmin = (req, res, next) => {
       .status(403)
       .json({ message: "Unauthorized to access this resource" });
   }
-  // setInterval(() => {
-  //   next()
-  // }, 1);
-  // next();		throws err? sends multiple req by d time next middle sends req
 };
 
 export { authorizeAdmin, authenticate };

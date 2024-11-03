@@ -17,8 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-const allowedOrigins = [
-  "https://task-frontend-pi-silk.vercel.app", 
+const allowedOrigins = [  
   "https://map-frontend-d6yw.vercel.app",
   "https://map-frontend-p78x.vercel.app",
   "http://localhost:5173",

@@ -87,9 +87,14 @@ const updateTask = asyncHandler(async (req, res) => {
   }
 });
 
-const updateIndex = asyncHandler(async (req, res) => {  
+const updateIndex = asyncHandler(async (req, res) => {
+  console.log(`inside updateIndex()`);
+  console.log(`"req.body":`, req.body);
   const { id } = req.params; // Task ID
-  const { newIndex, newStatus } = req.body; // New index and target column  
+  const { newIndex, newStatus } = req.body; // New index and target column
+  console.log(
+    `Updating task ${id} to index ${newIndex} in column ${newStatus}`
+  );
 
   // 1. Find the task being moved
   const task = await Task.findById(id);
@@ -102,7 +107,14 @@ const updateIndex = asyncHandler(async (req, res) => {
       index: task.index,
     }));
 
-  if (!task) {    
+  console.log(`"task":`, task.title);
+  console.log(
+    `"task:${task.title}" & "user-all tasks before":`,
+    formattedTasks(tasks)
+  ); // Now logs only the selected fields
+
+  if (!task) {
+    console.log(`Task not found `);
     return res.status(404).json({ message: "Task not found." });
   }
 
@@ -110,7 +122,8 @@ const updateIndex = asyncHandler(async (req, res) => {
   const oldIndex = task.index;
 
   // 2. Update the task's new column and index if the column is different
-  if (sourceStatus !== newStatus) {    
+  if (sourceStatus !== newStatus) {
+    console.log(`inside sourceStatus !== status `);
     await Task.updateMany(
       { status: newStatus, index: { $gte: newIndex } },
       { $inc: { index: 1 } } // Increment the index for tasks in target column

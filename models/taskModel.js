@@ -28,6 +28,10 @@ const taskSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  index: {
+    type: Number,
+    required: true, // Ensure each task has an index
+  },
 });
 
 // Create and export the Task model

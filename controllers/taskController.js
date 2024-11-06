@@ -46,20 +46,32 @@ const getAllTasks = asyncHandler(async (req, res) => {
   }
 });
 
-const deleteTask = asyncHandler(async (req, res) => {
-  console.log(`here in deleteTask() `);
-  console.log(`task id to be deleted: ${req.params.id} `);
-  console.log(`task name to be deleted: ${req.params.title} `);
+const deleteTask = asyncHandler(async (req, res) => {  
   const { id } = req.params; // Extract task ID from URL parameters
 
   try {
-    const task = await Task.findByIdAndDelete(id); // Find and delete the task
+    const task = await Task.findById(id);
+    const index = task.index;
+    const userId = task.userId; // Get the user ID from the task
 
     if (!task) {
       return res.status(404).json({ message: "Task not found" });
     }
 
-    res.status(200).json({ message: "Task deleted successfully" });
+    const taskDeleted = await Task.findByIdAndDelete(id);
+    if (!taskDeleted) {
+      return res.status(404).json({ message: "Task cant be deleted" });
+    }
+    await Task.updateMany(
+      { userId: userId, index: { $gt: index } },
+      { $inc: { index: -1 } } // Decrement the index for tasks after the deleted one
+    );
+    const updatedTasks = await Task.find({ userId: userId });    
+
+    res
+      .status(200)
+      // .json({ message: "Task deleted successfully", tasks: updatedTasks });
+      .json({ message: "Task deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Error deleting task", error });
   }
@@ -89,7 +101,7 @@ const updateTask = asyncHandler(async (req, res) => {
 
 const updateIndex = asyncHandler(async (req, res) => {
   console.log(`inside updateIndex()`);
-  console.log(`"req.body":`, req.body);
+  // console.log(`"req.body":`, req.body);
   const { id } = req.params; // Task ID
   const { newIndex, newStatus } = req.body; // New index and target column
   console.log(

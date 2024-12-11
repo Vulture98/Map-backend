@@ -4,8 +4,8 @@ import asyncHandler from "../middlewares/asyncHandler.js";
 import User from "../models/userModels.js";
 
 const createTask = asyncHandler(async (req, res) => {
-  console.log(`createTask()`);
-  console.log(`"req.user.username":`, req.user.username);
+  // console.log(`createTask()`);
+  // console.log(`"req.user.username":`, req.user.username);
   try {
     const { title, description, status, index } = req.body; // Removed userId from here
     const user = req.user._id; // Assuming you are attaching the user ID to the request in a middleware
@@ -28,15 +28,15 @@ const createTask = asyncHandler(async (req, res) => {
 });
 
 const getAllTasks = asyncHandler(async (req, res) => {
-  console.log(`in getAllTasks()  ===  ===  ===  ===  ===  ===  ===`);
-  console.log(`"req.user.username":`, req.user.username);
+  // console.log(`in getAllTasks()  ===  ===  ===  ===  ===  ===  ===`);
+  // console.log(`"req.user.username":`, req.user.username);
   try {
     //if googleUser
     if (req.user.googleId === true) {
-      console.log(`"req.user.googleId":`, req.user.googleId);
+      // console.log(`"req.user.googleId":`, req.user.googleId);
       // Find the user with the googleId and get their userId
       const user = await User.findOne({ googleId: req.user.googleId });
-      console.log(`"user.username":`, user.username);
+      // console.log(`"user.username":`, user.username);
     }
 
     const tasks = await Task.find({ userId: req.user.id }); // Fetch tasks only for the logged-in user
@@ -119,14 +119,14 @@ const updateIndex = asyncHandler(async (req, res) => {
       index: task.index,
     }));
 
-  console.log(`"task":`, task.title);
+  // console.log(`"task":`, task.title);
   console.log(
     `"task:${task.title}" & "user-all tasks before":`,
     formattedTasks(tasks)
   ); // Now logs only the selected fields
 
   if (!task) {
-    console.log(`Task not found `);
+    // console.log(`Task not found `);
     return res.status(404).json({ message: "Task not found." });
   }
 

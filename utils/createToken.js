@@ -14,7 +14,8 @@ const generateToken = (res, userId) => {
     // expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     httpOnly: true,    
     secure: process.env.NODE_ENV  === "production",    
-    sameSite: "None",
+    // sameSite: "None",
+    sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
     maxAge: 30 * 24 * 60 * 60 * 1000,
   });
   return token;

@@ -29,3 +29,4 @@ dist-ssr
 
 # other files
 observations.md
+/ignored

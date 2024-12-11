@@ -6,6 +6,7 @@ import cors from "cors";
 import router from "./routes/userRoutes.js";
 import routerTask from "./routes/taskRoutes.js";
 import routerGoogle from "./routes/googleRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 
 
 dotenv.config();
@@ -43,7 +44,7 @@ app.use(
 app.use("/api/users", router);
 app.use("/user/task", routerTask);
 app.use("/auth/google", routerGoogle);
-
+app.use("/api/admin", adminRoutes);
 
 app.get("/", (req, res) => {
   return res.status(201).json({ message: "Hello from G-AUTH-2" });

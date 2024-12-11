@@ -30,6 +30,10 @@ const userSchema = new Schema(
       type: String,
       default: false,
     },
+    isSuspended: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

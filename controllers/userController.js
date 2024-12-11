@@ -3,16 +3,13 @@ import asyncHandler from "../middlewares/asyncHandler.js";
 import bcrypt from "bcryptjs";
 import generateToken from "../utils/createToken.js";
 
-const createUser = asyncHandler(async (req, res) => {
-  console.log(`Hello from createUser`);
-  console.log(`"req.body here":`, req.body);
+const createUser = asyncHandler(async (req, res) => {  
   const { username, email, password, isAdmin } = req.body;
 
   if (!email || !password) {
     return res.status(400).json({ message: "All fields are required" });
   }
-
-  //   console.log(email);
+  
   const userExists = await User.findOne({ email });
   if (userExists) {
     console.log(`Email already exists `);
@@ -20,8 +17,7 @@ const createUser = asyncHandler(async (req, res) => {
   }
 
   const salt = await bcrypt.genSalt(10);
-  const hashPassword = await bcrypt.hash(password, salt);
-  console.log(`after password `);
+  const hashPassword = await bcrypt.hash(password, salt);  
   const newUser = await User.create({
     username: email,
     email,
@@ -45,16 +41,13 @@ const createUser = asyncHandler(async (req, res) => {
   }
 });
 
-const getAllUsers = asyncHandler(async (req, res) => {
-  console.log(`Hello from getAllUsers`);
-  const users = await User.find({});
-  console.log(`Hello from getAllUsers 2`);
+const getAllUsers = asyncHandler(async (req, res) => {  
+  const users = await User.find({});  
   console.log(`"users":`, users);
   res.status(200).json({
     count: users.length,
     data: users,
-  });
-  console.log(`Hello from getAllUsers 3`);
+  });  
 });
 
 const getUserById = asyncHandler(async (req, res) => {

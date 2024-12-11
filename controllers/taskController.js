@@ -3,9 +3,7 @@ import Task from "../models/taskModel.js";
 import asyncHandler from "../middlewares/asyncHandler.js";
 import User from "../models/userModels.js";
 
-const createTask = asyncHandler(async (req, res) => {
-  // console.log(`createTask()`);
-  // console.log(`"req.user.username":`, req.user.username);
+const createTask = asyncHandler(async (req, res) => {  
   try {
     const { title, description, status, index } = req.body; // Removed userId from here
     const user = req.user._id; // Assuming you are attaching the user ID to the request in a middleware
@@ -27,16 +25,11 @@ const createTask = asyncHandler(async (req, res) => {
   }
 });
 
-const getAllTasks = asyncHandler(async (req, res) => {
-  // console.log(`in getAllTasks()  ===  ===  ===  ===  ===  ===  ===`);
-  // console.log(`"req.user.username":`, req.user.username);
+const getAllTasks = asyncHandler(async (req, res) => {  
   try {
     //if googleUser
-    if (req.user.googleId === true) {
-      // console.log(`"req.user.googleId":`, req.user.googleId);
-      // Find the user with the googleId and get their userId
-      const user = await User.findOne({ googleId: req.user.googleId });
-      // console.log(`"user.username":`, user.username);
+    if (req.user.googleId === true) {      
+      const user = await User.findOne({ googleId: req.user.googleId });      
     }
 
     const tasks = await Task.find({ userId: req.user.id }); // Fetch tasks only for the logged-in user
@@ -99,9 +92,7 @@ const updateTask = asyncHandler(async (req, res) => {
   }
 });
 
-const updateIndex = asyncHandler(async (req, res) => {
-  console.log(`inside updateIndex()`);
-  // console.log(`"req.body":`, req.body);
+const updateIndex = asyncHandler(async (req, res) => {  
   const { id } = req.params; // Task ID
   const { newIndex, newStatus } = req.body; // New index and target column
   console.log(
@@ -118,8 +109,7 @@ const updateIndex = asyncHandler(async (req, res) => {
       status: task.status,
       index: task.index,
     }));
-
-  // console.log(`"task":`, task.title);
+  
   console.log(
     `"task:${task.title}" & "user-all tasks before":`,
     formattedTasks(tasks)
@@ -134,8 +124,7 @@ const updateIndex = asyncHandler(async (req, res) => {
   const oldIndex = task.index;
 
   // 2. Update the task's new column and index if the column is different
-  if (sourceStatus !== newStatus) {
-    console.log(`inside sourceStatus !== status `);
+  if (sourceStatus !== newStatus) {    
     await Task.updateMany(
       { status: newStatus, index: { $gte: newIndex } },
       { $inc: { index: 1 } } // Increment the index for tasks in target column
@@ -146,16 +135,14 @@ const updateIndex = asyncHandler(async (req, res) => {
     );
     await Task.updateOne({ _id: id }, { status: newStatus, index: newIndex });
   } else {
-    if (oldIndex > newIndex) {
-      console.log(`sourceStatus == newStatus MOVING UP if ===  ===  ===  === `);
+    if (oldIndex > newIndex) {      
       await Task.updateMany(
         { status: newStatus, index: { $gte: newIndex, $lt: oldIndex } },
         { $inc: { index: 1 } } // Increment the index for tasks in the target column
       );
       await Task.updateOne({ _id: id }, { status: newStatus, index: newIndex });
     } else {
-      //new > old
-      console.log(`sourceStatus == newStatus else MOVING DOWN else  ===  ===`);
+      //new > old      
       await Task.updateMany(
         { status: newStatus, index: { $gt: oldIndex, $lte: newIndex } },
         { $inc: { index: -1 } } // Increment the index for tasks in the target column

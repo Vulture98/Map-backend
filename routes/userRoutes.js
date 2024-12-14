@@ -10,12 +10,15 @@ import {
   getCurrentUserProfile,
   updateCurrentUserProfile,
   updateUserById,
+  verifyUser,
 } from "../controllers/userController.js";
 import { authenticate, authorizeAdmin } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
 // app.use("/api/users", router);
+
+router.get("/verifyUser", authenticate, verifyUser);
 
 router
   .route("/")

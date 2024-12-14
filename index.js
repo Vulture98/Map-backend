@@ -47,7 +47,7 @@ app.use("/auth/google", routerGoogle);
 app.use("/api/admin", adminRoutes);
 
 app.get("/", (req, res) => {
-  return res.status(201).json({ message: "Hello from G-AUTH-2" });
+  return res.status(201).json({ message: "Hello from Map-B" });
 });
 app.listen(PORT, () => {
   console.log(`server start at port no ${PORT}`);

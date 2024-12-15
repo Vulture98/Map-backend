@@ -6,7 +6,7 @@ const authenticate = asyncHandler(async (req, res, next) => {
   let token;
   token = req.cookies.jwt;
 
-  console.log(`"authenticate-token":`, token);
+  // console.log(`"authenticate-token":`, token);
 
   if (token) {
     try {
@@ -14,8 +14,8 @@ const authenticate = asyncHandler(async (req, res, next) => {
       req.user = await User.findById(decoded.userId).select("-password");
       next();
     } catch (error) {
-      console.error(`"error.message":`, error.message);
-      console.log(`"error.message":`, error.message);
+      // console.error(`"error.message":`, error.message);
+      // console.log(`"error.message":`, error.message);
       return res.status(401).json({ message: "Not authorized" });
     }
   } else {
@@ -37,10 +37,10 @@ const authorizeAdmin = (req, res, next) => {
 };
 
 const verifyAdmin = asyncHandler(async (req, res) => {
-  console.log(`here inside verifyAdmin()`);
-  console.log(`req.body: `, req.body);
-  console.log(`"req.user":`, req.user);
-  console.log(`"req.user.isAdmin":`, req.user.isAdmin);
+  // console.log(`here inside verifyAdmin()`);
+  // console.log(`req.body: `, req.body);
+  // console.log(`"req.user":`, req.user);
+  // console.log(`"req.user.isAdmin":`, req.user.isAdmin);
   if (req.user && req.user.isAdmin) {
     console.log("User is admin");
     res.status(200).json({ isAuthenticated: true, message: "Authorized to access this resource" });

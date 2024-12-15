@@ -3,8 +3,8 @@ import dotenv from 'dotenv'
 
 const generateToken = (res, userId) => {
   dotenv.config()
-  console.log(`inside generateToken() `);
-  console.log(`node_env: ${process.env.NODE_ENV} `);
+  // console.log(`inside generateToken() `);
+  // console.log(`node_env: ${process.env.NODE_ENV} `);
   const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
     expiresIn: "30d",
   });

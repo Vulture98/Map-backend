@@ -1,23 +1,22 @@
 import asyncHandler from "./asyncHandler.js";
 import User from "../models/userModels.js";
 
+// console.log(`inside suspensionCheck()`);
 
 const suspensionCheck = asyncHandler(async (req, res, next) => {
-  console.log(`inside suspensionCheck()`);
-
-  console.log(`"req.path":`, req.path);
-  console.log(`"req.body":`, req.body);
-  console.log(`"req.user":`, req.user);
+  // console.log(`"req.path":`, req.path);
+  // console.log(`"req.body":`, req.body);
+  // console.log(`"req.user":`, req.user);
 
   // Skip suspension check for login and register routes
   if (req.path === '/login' || req.path === '/register' || req.path === '/logout') {
-    console.log(`Hello from suspensionCheck() skip`);
+    // console.log(`Hello from suspensionCheck() skip`);
     return next();
   }
 
   const existingUser = await User.findOne({ email: req.body.email });
   // const user = await User.findById(req.user?._id);
-  console.log(`user.isSuspended:`, existingUser.isSuspended);
+  // console.log(`user.isSuspended:`, existingUser.isSuspended);
 
   if (!existingUser) {
     return next();

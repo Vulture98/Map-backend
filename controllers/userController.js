@@ -12,7 +12,7 @@ const createUser = asyncHandler(async (req, res) => {
   
   const userExists = await User.findOne({ email });
   if (userExists) {
-    console.log(`Email already exists `);
+    // console.log(`Email already exists `);
     return res.status(400).json({ message: "Email already exists" });
   }
 
@@ -43,7 +43,7 @@ const createUser = asyncHandler(async (req, res) => {
 
 const getAllUsers = asyncHandler(async (req, res) => {  
   const users = await User.find({});  
-  console.log(`"users":`, users);
+  // console.log(`"users":`, users);
   res.status(200).json({
     count: users.length,
     data: users,
@@ -52,7 +52,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
 
 const getUserById = asyncHandler(async (req, res) => {
   const userId = req.params.id;
-  console.log(`user to check:`, userId);
+  // console.log(`user to check:`, userId);
   const existingUser = await User.findById(userId);
   if (!existingUser) {
     return res.status(404).json({ message: "User not found" });
@@ -83,7 +83,7 @@ const deleteUserById = asyncHandler(async (req, res) => {
 });
 
 const updateUser = asyncHandler(async (req, res) => {
-  console.log(`Hello from updateuser `);
+  // console.log(`Hello from updateuser `);
   const userId = req.params.id;
   const { username, email, password, isAdmin } = req.body;
 
@@ -116,7 +116,7 @@ const updateUser = asyncHandler(async (req, res) => {
 
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  console.log(`here in loginUser(): ${email} `);
+  // console.log(`here in loginUser(): ${email} `);
   const existingUser = await User.findOne({ email });
 
   if (
@@ -126,7 +126,7 @@ const loginUser = asyncHandler(async (req, res) => {
     return res.status(401).json({ message: "Invalid email or password" });
   }
   const token = generateToken(res, existingUser._id);
-  console.log(`"res.cookie-token":`, token);
+  // console.log(`"res.cookie-token":`, token);
   res.status(201).json({ message: `welcome ${existingUser.username}` });
   return;
 });
@@ -142,7 +142,7 @@ const logoutCurrentUser = asyncHandler(async (req, res) => {
 });
 
 const getCurrentUserProfile = asyncHandler(async (req, res) => {
-  console.log(`Hello from getCurrentUserProfile()`);
+  // console.log(`Hello from getCurrentUserProfile()`);
   const CurrentUser = await User.findById(req.user._id);
 
   if (CurrentUser) {
@@ -159,15 +159,15 @@ const getCurrentUserProfile = asyncHandler(async (req, res) => {
 });
 
 const updateCurrentUserProfile = asyncHandler(async (req, res) => {
-  console.log(`Hello from updateCurrentUserProfile()`);
+  // console.log(`Hello from updateCurrentUserProfile()`);
   const user = await User.findById(req.user._id);
-  console.log(`"updateUser":`, user);
+  // console.log(`"updateUser":`, user);
   if (user) {
     user.username = req.body.username || user.username;
     user.email = req.body.email || user.email;
 
     if (req.body.password) {
-      console.log(`"req.body.password":`, req.body.password);
+      // console.log(`"req.body.password":`, req.body.password);
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(req.body.password, salt);
       user.password = hashedPassword;
@@ -186,7 +186,7 @@ const updateCurrentUserProfile = asyncHandler(async (req, res) => {
 });
 
 const updateUserById = asyncHandler(async (req, res) => {
-  console.log(`Hello from updateuser `);
+  // console.log(`Hello from updateuser `);
   const userId = req.params.id;
   const { username, email } = req.body;
 
@@ -211,7 +211,7 @@ const updateUserById = asyncHandler(async (req, res) => {
 });
 
 const verifyUser = asyncHandler(async (req, res) => {
-  console.log(`Hello from verifyUser()`);
+  // console.log(`Hello from verifyUser()`);
 
   res.status(200).json({ isAuthenticated: true, message: "User verified" });
 });

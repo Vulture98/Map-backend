@@ -24,7 +24,7 @@ const getGoogleUser = asyncHandler(async (req, res) => {
 
     // Check for existing user
     let user = await User.findOne({ googleId });
-    console.log(`Hello from post /auth/google `);
+    // console.log(`Hello from post /auth/google `);
     if (!user) {
       // Create a new user if not found
       user = await User.create({
@@ -38,8 +38,8 @@ const getGoogleUser = asyncHandler(async (req, res) => {
         `New User created - email: ${user.email} username: ${user.username}`
       );
 
-      console.log("Response Headers:", res.getHeaders());
-      console.log("Cookies:", res.getHeader("Set-Cookie"));
+      // console.log("Response Headers:", res.getHeaders());
+      // console.log("Cookies:", res.getHeader("Set-Cookie"));
 
       const jwtToken = generateToken(res, user._id);
       return res.status(200).json({
@@ -59,11 +59,11 @@ const getGoogleUser = asyncHandler(async (req, res) => {
       });
     }
     const jwtToken = generateToken(res, user._id);
-    console.log("Response Headers:", res.getHeaders());
-    console.log("Cookies:", res.getHeader("Set-Cookie"));
-    console.log(
-      `Existing User email: ${user.email} username: ${user.username}`
-    );
+    // console.log("Response Headers:", res.getHeaders());
+    // console.log("Cookies:", res.getHeader("Set-Cookie"));
+    // console.log(
+    //   `Existing User email: ${user.email} username: ${user.username}`
+    // );
     return res.status(200).json({
       success: true,
       userId: user.googleId,

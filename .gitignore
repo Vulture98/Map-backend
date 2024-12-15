@@ -31,3 +31,4 @@ dist-ssr
 observations.md
 /ignored
 utils/redis/taskCache.js
+redis/

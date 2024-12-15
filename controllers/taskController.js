@@ -95,9 +95,9 @@ const updateTask = asyncHandler(async (req, res) => {
 const updateIndex = asyncHandler(async (req, res) => {  
   const { id } = req.params; // Task ID
   const { newIndex, newStatus } = req.body; // New index and target column
-  console.log(
-    `Updating task ${id} to index ${newIndex} in column ${newStatus}`
-  );
+  // console.log(
+  //   `Updating task ${id} to index ${newIndex} in column ${newStatus}`
+  // );
 
   // 1. Find the task being moved
   const task = await Task.findById(id);

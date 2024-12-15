@@ -132,6 +132,7 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const logoutCurrentUser = asyncHandler(async (req, res) => {
+  console.log(`inside logoutCurrentUser()`);
   res.clearCookie("token");
   res.cookie("jwt", "", {
     httpOnly: true,

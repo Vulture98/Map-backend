@@ -12,10 +12,10 @@ const generateToken = (res, userId) => {
   //set jwt http cookie
   res.cookie("jwt", token, {
     // expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-    httpOnly: true,    
-    secure: process.env.NODE_ENV  === "production",    
-    // sameSite: "None",
-    sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+    httpOnly: true,                    
+    secure: true,  // Always true for production
+    
+    sameSite: "None",  // Required for cross-origin cookies
     maxAge: 30 * 24 * 60 * 60 * 1000,
   });
   return token;

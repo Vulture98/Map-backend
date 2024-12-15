@@ -28,16 +28,20 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: (origin, callback) => {
+      console.log('Request from origin:', origin);
       // Allow requests with no origin
       if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-        callback(null, origin);
+        console.log('Origin allowed:', origin);
+        callback(null, true);
       } else {
+        console.log('Origin blocked:', origin);
         callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["Set-Cookie"],  // for cookie handling
   })
 );
 

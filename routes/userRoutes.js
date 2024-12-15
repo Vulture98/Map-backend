@@ -10,17 +10,24 @@ import {
   getCurrentUserProfile,
   updateCurrentUserProfile,
   updateUserById,
+  verifyUser,
 } from "../controllers/userController.js";
 import { authenticate, authorizeAdmin } from "../middlewares/authMiddleware.js";
+import { suspensionCheck } from "../middlewares/suspendMiddleware.js";
 
 const router = express.Router();
 
 // app.use("/api/users", router);
 
+router.get("/verifyUser", authenticate, verifyUser);
+
 router
   .route("/")
   .post(createUser)
   .get(authenticate, authorizeAdmin, getAllUsers);
+  
+  
+router.use(suspensionCheck);
 // this is confused with /profile
 // router.route("/:id").get(getUserById).delete(deleteUser).put(updateUser);
 router.post("/auth", loginUser);

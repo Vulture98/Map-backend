@@ -210,6 +210,12 @@ const updateUserById = asyncHandler(async (req, res) => {
   res.status(200).json(updatedUser);
 });
 
+const verifyUser = asyncHandler(async (req, res) => {
+  console.log(`Hello from verifyUser()`);
+
+  res.status(200).json({ isAuthenticated: true, message: "User verified" });
+});
+
 export {
   createUser,
   loginUser,
@@ -221,4 +227,5 @@ export {
   getCurrentUserProfile,
   updateCurrentUserProfile,
   updateUserById,
+  verifyUser,
 };

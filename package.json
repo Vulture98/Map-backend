@@ -14,7 +14,8 @@
     "express": "^4.21.1",
     "google-auth-library": "^9.14.2",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.7.2"
+    "mongoose": "^8.7.2",
+    "redis": "^4.7.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.11.1",

@@ -51,6 +51,13 @@ const getGoogleUser = asyncHandler(async (req, res) => {
       });
     }
 
+    if (user.isSuspended) {
+      console.log(`Google User ${user.email} is suspended`);
+      return res.status(403).json({
+        success: false,
+        message: "Your account has been suspended. Please contact admin for support."
+      });
+    }
     const jwtToken = generateToken(res, user._id);
     console.log("Response Headers:", res.getHeaders());
     console.log("Cookies:", res.getHeader("Set-Cookie"));

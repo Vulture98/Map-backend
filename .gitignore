@@ -30,3 +30,4 @@ dist-ssr
 # other files
 observations.md
 /ignored
+utils/redis/taskCache.js

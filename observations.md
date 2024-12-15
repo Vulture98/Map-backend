@@ -10,3 +10,6 @@ Ensure routing is implemented throughout the application.
 
 # frontend:
 im using loaclhost:5173/ itself as login page so if u use /login make sure to change it
+
+# admin, user jwt:
+when u login into both admin, user jwt is stored in cookie so make sure to change the cookie name

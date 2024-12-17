@@ -3,13 +3,13 @@ import asyncHandler from "../middlewares/asyncHandler.js";
 import bcrypt from "bcryptjs";
 import generateToken from "../utils/createToken.js";
 
-const createUser = asyncHandler(async (req, res) => {  
+const createUser = asyncHandler(async (req, res) => {
   const { username, email, password, isAdmin } = req.body;
 
   if (!email || !password) {
     return res.status(400).json({ message: "All fields are required" });
   }
-  
+
   const userExists = await User.findOne({ email });
   if (userExists) {
     // console.log(`Email already exists `);
@@ -17,7 +17,7 @@ const createUser = asyncHandler(async (req, res) => {
   }
 
   const salt = await bcrypt.genSalt(10);
-  const hashPassword = await bcrypt.hash(password, salt);  
+  const hashPassword = await bcrypt.hash(password, salt);
   const newUser = await User.create({
     username: email,
     email,
@@ -41,13 +41,13 @@ const createUser = asyncHandler(async (req, res) => {
   }
 });
 
-const getAllUsers = asyncHandler(async (req, res) => {  
-  const users = await User.find({});  
+const getAllUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({});
   // console.log(`"users":`, users);
   res.status(200).json({
     count: users.length,
     data: users,
-  });  
+  });
 });
 
 const getUserById = asyncHandler(async (req, res) => {
@@ -132,11 +132,19 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const logoutCurrentUser = asyncHandler(async (req, res) => {
-  console.log(`inside logoutCurrentUser()`);
-  res.clearCookie("token");
-  res.clearCookie("jwt");
+  console.log(`inside logoutCurrentUser()`);  
+  res.clearCookie("token");  
+  res.clearCookie("jwt", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production", // Match production flag
+    sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+    path: "/", // Explicit path to ensure consistency
+  });
   res.cookie("jwt", "", {
     httpOnly: true,
+    secure: process.env.NODE_ENV === "production", // Match production flag
+    sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+    path: "/", // Explicit path to ensure consistency
     expires: new Date(0),
   });
 
